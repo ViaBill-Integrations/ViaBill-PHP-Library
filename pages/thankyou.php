@@ -30,7 +30,7 @@ $contents = '<!DOCTYPE html>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
-    <div class="container">
+    <div class="container mt-3">
     <h3>Thank you for you order!</h3>
     <div class="p-3 mb-2 bg-success text-white">In the real world, this page will be an actual page from your e-commerce platform.</div>    
     <a href="'.$index_url.'">Go back to main menu to try something difference</a>

@@ -31,11 +31,12 @@ $response = null;
 try {
     $response = $viabill->notifications($data);
     if (!empty($response['messages'])) {
-        var_dump($response['messages']);
+        $user_msg = implode('</li><li>', $response['messages']);
+        $viabill->helper->displayUserMessage('<ul><li>'.$user_msg.'</li></ul>', 'notice', 'Notifications');
     } else {
-        exit("You have no notification messages!");
+        $viabill->helper->displayUserMessage('There are no new notifications', 'notice', 'Notifications');
     }
 } catch (ViabillRequestException $e) {
-    var_dump($e);
+    $viabill->helper->displayUserMessage($e->getMessage());
     return false;
 }

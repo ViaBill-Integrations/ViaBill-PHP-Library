@@ -17,6 +17,7 @@
 namespace App\Viabill;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class OutgoingRequests
 {
@@ -62,20 +63,28 @@ class OutgoingRequests
         $client = new Client();
 
         if ($method == 'GET') {
-            $response = $client->request(
-                'GET', $requestUrl, [
-                    'headers' => $headers,
-                    'query' => $data
-                ]
-            );
+            try {
+                $response = $client->request(
+                    'GET', $requestUrl, [
+                        'headers' => $headers,
+                        'query' => $data
+                    ]
+                );
+            } catch (ClientException $e) {
+                return false;
+            } 
         }
 
         if ($method == 'POST') {
-            $response = $client->request(
-                'POST', $requestUrl, [
-                    'form_params' => $data
-                ]
-            );
+            try {
+                $response = $client->request(
+                    'POST', $requestUrl, [
+                        'form_params' => $data
+                    ]
+                );
+            } catch (ClientException $e) {
+                return false;
+            }           
         }
 
         $output = [
@@ -135,13 +144,17 @@ class OutgoingRequests
 
         $client = new Client();
 
-        $response = $client->request(
-            'POST', $requestUrl, [
-                'allow_redirects' => false,
-                'headers' => $headers,
-                'form_params' => $data
-            ]
-        );
+        try {
+            $response = $client->request(
+                'POST', $requestUrl, [
+                    'allow_redirects' => false,
+                    'headers' => $headers,
+                    'form_params' => $data
+                ]
+            );
+        } catch (ClientException $e) {
+            return false;
+        }       
 
         $output = [
             'request' => [                        // Information about the request

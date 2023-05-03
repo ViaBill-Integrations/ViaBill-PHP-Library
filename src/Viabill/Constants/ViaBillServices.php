@@ -20,10 +20,22 @@ class ViaBillServices
 {
     // TODO: 
     // You must give a valid addon name, please contact tech@viabill.com    
-    const ADDON_NAME = 'test';
+    const ADDON_NAME = 'your-addon-name';
 
     // These endpoints contain references to the addon name
-    const API_END_POINTS = [        
+    const API_END_POINTS = [
+        'registration'        => [
+            'endpoint'        => '/api/addon/ADDON_NAME/register',
+            'method'          => 'POST',
+            'required_fields' => [ 'email', 'name', 'url', 'country' ],            
+            'optional_fields' => [ 'affiliate', 'additionalInfo' ],
+            'status_codes'    => [
+                200 => 'messages.viabillApiMessages.successfulRequest',
+                400 => 'messages.viabillApiMessages.requestError',
+                500 => 'messages.viabillApiMessages.apiServerError',
+            ],
+            'signature'       => null,
+        ],
         'myviabill'           => [
             'endpoint'        => '/api/addon/ADDON_NAME/myviabill',
             'method'          => 'GET',
@@ -153,7 +165,7 @@ class ViaBillServices
         // check if the default ADDON name is still used
         $addon_name = self::ADDON_NAME;
         if ($addon_name == 'your-addon-name') {            
-            $addon_name = 'test';
+            $addon_name = 'WOOCOMMERCE';
         }
 
         if (isset(self::API_END_POINTS[$end_point])) {

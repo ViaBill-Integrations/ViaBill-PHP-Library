@@ -34,9 +34,12 @@ $response = null;
 
 try {
     $response = $viabill->captureTransaction($data);
+    if ($response) {
+        $viabill->helper->displayUserMessage("The previous payment was captured successfully!", 'notice', 'Payment capture');
+    } else {
+        $viabill->helper->displayUserMessage("Could not capture the previous payment", 'error', 'Payment capture');
+    }
 } catch (ViabillInvalidValueException $e) {
-    var_dump($e);
+    $viabill->helper->displayUserMessage($e->getMessage());
     return false;
 }
-
-var_dump($response);

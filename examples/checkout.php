@@ -47,6 +47,6 @@ try {
         return $viabill->helper->httpRedirect($redirect_url);
     }
 } catch (ViabillRequestException $e) {
-    var_dump($e);
+    $viabill->helper->displayUserMessage($e->getMessage());
     return false;
 }

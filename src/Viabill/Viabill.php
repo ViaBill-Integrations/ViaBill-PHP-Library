@@ -64,6 +64,44 @@ class Viabill
     }
 
     /**
+     * @param array $data
+     * @param array $headers
+     * @param bool  $verbose
+     *
+     * @return array|bool
+     * @throws ViabillRequestException
+     */
+    public function registerViabillUser(array $data = [], array $headers = [], bool $verbose = false)
+    {
+        $return = [
+            'error' => null,
+            'key' => null,
+            'secret' => null,
+            'pricetagScript' => null
+        ];
+        
+        $response_str = $this->getRequestData($data, $headers, $verbose, 'registration');
+
+        if (empty($response_str)) {
+            $return['error'] = "registration returned an empty response!";
+            return false;
+        } else {
+            $response = json_decode($response_str, true);
+            if (isset($response['errors'])) {
+                $return['error'] = $response['errors'][0]['error'];
+            } else {
+                // do some sanity check
+                // ...
+                foreach ($response as $key => $value) {
+                    $return[$key] = $response[$key];
+                }
+            }
+        }
+
+        return $return;
+    }
+
+    /**
      * @throws ViabillRequestException
      */
     public function checkout(array $data = [], array $headers = [], $shop = null) : array
@@ -222,6 +260,8 @@ class Viabill
             } else {
                 $response = OutgoingRequests::request($request['endpoint'], $request['method'], $request['data'], $this->testMode, $headers, false);
             }
+
+            if ($response === false) return false;
 
             return $verbose ? $response : $response['response']['body'];
         }

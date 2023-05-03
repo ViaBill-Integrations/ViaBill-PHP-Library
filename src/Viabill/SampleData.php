@@ -47,7 +47,7 @@ class SampleData
      * If the transaction type is set to "sale" then after the
      * payment authorization, a payment capture will take place
      */
-    const TRANSACTION_TYPE = 'sale'; // 'sale' or 'authorize'
+    const TRANSACTION_TYPE = 'authorize'; // 'sale' or 'authorize'
 
     /**
      * TODO:
@@ -97,8 +97,8 @@ class SampleData
         if ($renew_order_data) {
             $order_id = mt_rand(1, 32000);
             $transaction_id = 'TRANS'.$order_id;
-            $currency = 'USD';
-            $amount = mt_rand(100, 300);  // the amount should fall into certain valid range
+            $currency = 'DKK';
+            $amount = mt_rand(500, 1000);  // the amount should fall into certain valid range
                                           // not all amounts are acceptible            
 
             $order = [

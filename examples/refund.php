@@ -34,11 +34,13 @@ $data = [
 
 try {
     $response = $viabill->refundTransaction($data);
-} catch (ViabillInvalidValueException $e) {
+    if ($response) {
+        $viabill->helper->displayUserMessage("The previous payment was refunded successfully!", 'notice', 'Payment refund');
+    } else {
+        $viabill->helper->displayUserMessage("Could not refund the previous payment. Make sure you have captured it first.", 'error', 'Payment refund');
+    }
 } catch (ViabillRequestException $e) {
-    var_dump($e);
+    $viabill->helper->displayUserMessage($e->getMessage());
     return false;
 }
-// Response status should be 204
 
-var_dump($response);

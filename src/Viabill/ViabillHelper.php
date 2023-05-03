@@ -192,14 +192,14 @@ class ViabillHelper
             $protocol = "https";
         } else {
             $protocol = 'http';
-            exit("You should use the secure HTTPS protocol, instead of HTTP");
+            $this->displayUserMessage("You should use the secure HTTPS protocol, instead of HTTP");
         }
 
         // make sure you are running on a local host, it should be publicly
         // accesible URL
         $host = $_SERVER['HTTP_HOST'];
         if (strpos($host, 'localhost')!==false) {
-            exit("You should run it on a local host!");
+            $this->displayUserMessage("You should run it on a local host!");
         }
 
         // Clean request URI, if needed
@@ -212,8 +212,10 @@ class ViabillHelper
             'examples/myviabill.php',
             'examples/notifications.php',
             'examples/refund.php',
+            'examples/registration.php',
             'pages/thankyou.php',
             'pages/ordercancelled.php',
+            'pages/user_messages.php',
             'index.php'], '', $uri
         );
         $pos = strpos($uri, '?');
@@ -223,6 +225,34 @@ class ViabillHelper
                                                         
         // Print the link
         return rtrim($protocol . '://' . $host . $uri, '/').'/';
+    }
+
+    /**
+     * Check if the API key and Secret are set,
+     * If not redirect the user to the warning page,
+     * which includes a registration link to auto-generate them.
+     */
+    public function checkIfAPIKeySecretExist()
+    {
+        $base_url = $this->getBaseURL();
+        $registration_url = $base_url.'examples/registration.php';
+
+        // Sanity checks - Make sure they have been initialized properly
+        $sample_filepath = str_replace('ViabillHelper.php', '<strong>SampleData.php</strong>', __FILE__);
+        if ($this->apiKey == 'XXXXX') {            
+            $user_msg = "You need to initialized the <strong>API KEY</strong> inside the $sample_filepath file!".
+                "If you don't have already a SECRET KEY you can click on the link below to register for a Viabill test account and retrieve one automatically." .'<br/>'.
+                '<a href="'.$registration_url.'" />Viabill Account Registration</a>';
+        
+            $this->displayUserMessage($user_msg, 'warning');
+        }
+        if ($this->apiSecret == 'XXXXX') {
+            $user_msg = "You need to initialized the <strong>SECRET KEY</strong> inside the $sample_filepath file!".'<br/>'.
+                "If you don't have already a SECRET KEY you can click on the link below to register for a Viabill test account and retrieve one automatically." .'<br/>'.
+                '<a href="'.$registration_url.'" />Viabill Account Registration</a>';
+            
+            $this->displayUserMessage($user_msg, 'warning');
+        }
     }
 
     /**
@@ -240,7 +270,7 @@ class ViabillHelper
         if ($use_sample_data) {
             $this->loadSampleSettings();
         } else {
-            exit(
+            $this->displayUserMessage(
                 "loadViabillSettings not implemented yet!
                 You need to implement it first or set the USE_SAMPLE_DATA = 1 instead,
                 if you want to try the transactions with sample data."
@@ -254,15 +284,15 @@ class ViabillHelper
         $this->transactionType = SampleData::TRANSACTION_TYPE;
         $this->apiSecret = SampleData::SECRET_KEY;
         $this->apiKey = SampleData::API_KEY;
-        $this->priceTagScript = SampleData::getPricetagScript();
+        $this->priceTagScript = SampleData::getPricetagScript();        
+    }        
 
-        // Sanity checks - Make sure they have been initialized properly
-        $sample_filepath = str_replace('ViabillHelper.php', '<strong>SampleData.php</strong>', __FILE__);
-        if ($this->apiKey == 'XXXXX') {            
-            exit("You need to initialized the <strong>API KEY</strong> inside the $sample_filepath file!");
-        }
-        if ($this->apiSecret == 'XXXXX') {
-            exit("You need to initialized the <strong>SECRET KEY</strong> inside the $sample_filepath file!");
-        }
-    }    
+    public function displayUserMessage($msg, $type = 'error', $header = '')
+    {
+        $base_url = $this->getBaseURL();
+        $redirect_url = $base_url.'pages/user_messages.php?type='.$type.'&msg_header='.urlencode($header).'&msg_content='.urlencode($msg);
+        $this->httpRedirect($redirect_url);
+        exit();
+    }
+        
 }

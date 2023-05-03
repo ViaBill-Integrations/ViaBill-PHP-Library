@@ -34,9 +34,9 @@ try {
         $redirect_url = $response['url'];
         return $viabill->helper->httpRedirect($redirect_url);
     } else {
-        exit($response['error']);
+        $viabill->helper->displayUserMessage($response['error'], 'error');
     }
 } catch (ViabillRequestException $e) {
-    var_dump($e);
+    $viabill->helper->displayUserMessage($e->getMessage());
     return false;
 }
